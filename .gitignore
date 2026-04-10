@@ -1,0 +1,15 @@
+# Cadence simulation outputs
+simulation/
+*.log
+*.ahdlSimDB
+xcelium.d/
+
+# Cadence lock files
+*.cdslck
+.cdslck
+
+# Large database files (check with your team if these are needed)
+*.calibre*
+
+# OS files
+.DS_Store
