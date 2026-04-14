@@ -1,0 +1,16 @@
+#
+# Edit Lock-Stake file. CAUTION: Please do not change.
+#
+# Information about current Edit Lock Owner.
+#
+LockStakeVersion               1.1
+LoginName                      gannon1
+HostName                       big04.seas.upenn.edu
+ProcessIdentifier              852246
+ProcessCreationTime_UTC        1775850012
+ProcessCreationTime_Readable   Fri Apr 10 15:40:12 2026 EDT
+AppIdentifier                  OA File System Design Manager
+OSType                         unix
+ReasonForPlacingEditLock       OpenAccess edit lock
+FilePathUsedToEditLock         /lcars/home/g/gannon1/cadenceGPDK/MemoryDesignFinalProject/12T_DICE_Bitcell_Functional_Verification_Testbench/schematic/sch.oa.cdslck
+TimeEditLocked                 Fri Apr 10 15:46:28 2026 EDT
