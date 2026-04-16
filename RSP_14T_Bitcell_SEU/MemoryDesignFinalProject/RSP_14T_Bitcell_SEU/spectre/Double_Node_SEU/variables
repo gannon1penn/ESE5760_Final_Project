@@ -7,7 +7,7 @@ tmp1 = make_sevVariableStruct()
 tmp1 = (ncons nil)
 )
 tmp1->name = "Qinj"
-tmp1->expression = "200f"
+tmp1->expression = "-3.75f"
 tmp1->index = 1
 (unless tmp2
 tmp2 = make_sevVariableStruct()
