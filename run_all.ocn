@@ -1,17 +1,16 @@
 ; run_all.ocn
-; Outer loop — sets globals and loads dice_seu_single.ocn for each condition
 
 ; ---- Write CSV header ----
 csvport = outfile( "/lcars/home/g/gannon1/simulation/results/dice_seu_results.csv" "a" )
-fprintf( csvport "wn_store,wp_store,wn_access,temp,qinj,flipped\n" )
+fprintf( csvport "wn_store,wp_store,wn_access,temp,polarity,qinj,flipped\n" )
 close( csvport )
 
 ; ---- Define sweep space ----
-wn_store_list  = list( 120e-9 180e-9 240e-9 )
-wp_store_list  = list( 120e-9 180e-9 240e-9 )
-wn_access_val  = 120e-9
-temp_list      = list( 27.0 )
-qinj_list      = list( -2e-15 -4e-15 -6e-15 -7e-15 -7.5e-15 -8e-15 -9e-15 -10e-15 -12e-15 -15e-15 -18e-15 -20e-15 -25e-15 -30e-15 )
+wn_store_list = list( 120e-9 160e-9 200e-9 240e-9 280e-9 320e-9 )
+wp_store_list = list( 120e-9 160e-9 200e-9 240e-9 280e-9 320e-9 )
+wn_access_val = 120e-9
+temp_list     = list( -40.0 0.0 27.0 85.0 125.0 )
+polarity_list = list( 1 0 )
 
 single_script = "/lcars/home/g/gannon1/cadenceGPDK/MemoryDesignFinalProject/dice_seu_single.ocn"
 
@@ -19,16 +18,12 @@ single_script = "/lcars/home/g/gannon1/cadenceGPDK/MemoryDesignFinalProject/dice
 foreach( wn wn_store_list
     foreach( wp wp_store_list
         foreach( tmp temp_list
-            foreach( qinj qinj_list
-
-                ; Set globals
+            foreach( pol polarity_list
                 g_wn_store  = wn
                 g_wp_store  = wp
                 g_wn_access = wn_access_val
                 g_temp      = tmp
-                g_qinj      = qinj
-
-                ; Load and run single script
+                g_polarity  = pol
                 load( single_script )
             )
         )
