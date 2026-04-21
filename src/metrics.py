@@ -2,6 +2,8 @@ import numpy as np
 
 
 def crossing_time(df, threshold, direction="falling"):
+    # find the first time the waveform crosses a given threshold
+    # used for delay estimation and transition timing
     t = df["time"].to_numpy()
     y = df["value"].to_numpy()
 
@@ -10,6 +12,7 @@ def crossing_time(df, threshold, direction="falling"):
     else:
         indices = np.where(y >= threshold)[0]
 
+    # return NaN if the signal never crosses the threshold
     if len(indices) == 0:
         return np.nan
 
@@ -17,11 +20,13 @@ def crossing_time(df, threshold, direction="falling"):
 
 
 def edge_metrics(df):
+    # basic transition summary for a single waveform
     initial = df["value"].iloc[0]
     final = df["value"].iloc[-1]
     v_max = df["value"].max()
     v_min = df["value"].min()
 
+    # decide whether this looks more like a rising or falling transition
     if initial > final:
         direction = "falling"
         high = initial
@@ -33,6 +38,7 @@ def edge_metrics(df):
 
     amp = high - low
 
+    # extract standard threshold crossing times
     t90 = crossing_time(df, low + 0.9 * amp, direction=direction)
     t50 = crossing_time(df, low + 0.5 * amp, direction=direction)
     t10 = crossing_time(df, low + 0.1 * amp, direction=direction)
@@ -46,11 +52,14 @@ def edge_metrics(df):
         "t90": t90,
         "t50": t50,
         "t10": t10,
+        # simple 90% to 10% transition duration
         "transition_time": abs(t10 - t90) if not np.isnan(t10) and not np.isnan(t90) else np.nan
     }
 
 
 def estimate_delay(input_df, output_df):
+    # estimate propagation delay using 50% threshold crossing
+    # this is a simplified waveform-based proxy, not a full timing signoff metric
     in_initial = input_df["value"].iloc[0]
     in_final = input_df["value"].iloc[-1]
     out_initial = output_df["value"].iloc[0]
@@ -70,6 +79,8 @@ def estimate_delay(input_df, output_df):
 
 
 def current_metrics(df, vdd=1.1):
+    # convert supply current into current draw / power / energy
+    # sign is flipped here so current drawn from VDD is reported as positive
     t = df["time"].to_numpy()
     i = df["value"].to_numpy()
 
@@ -87,6 +98,7 @@ def current_metrics(df, vdd=1.1):
 
 
 def seu_metrics(df):
+    # summarize how severely the node is disturbed during an SEU event
     t = df["time"].to_numpy()
     y = df["value"].to_numpy()
 
@@ -95,10 +107,14 @@ def seu_metrics(df):
     min_voltage = y[min_idx]
     min_time = t[min_idx]
 
+    # voltage drop relative to the pre-disturbance baseline
     dip = baseline - min_voltage
+
+    # integrated disturbance severity over time
     area = np.trapz(np.maximum(baseline - y, 0), t)
 
     def recovery_time(target_ratio):
+        # find how long it takes to recover to a chosen fraction of baseline
         target = target_ratio * baseline
         idx = np.where((t > min_time) & (y >= target))[0]
         if len(idx) == 0:
@@ -118,6 +134,8 @@ def seu_metrics(df):
 
 
 def snm_proxy(df):
+    # use the provided curve as a qualitative stability indicator
+    # this is not a formal butterfly-based SNM extraction
     y = df["value"].to_numpy()
     x = df["time"].to_numpy()
 

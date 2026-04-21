@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 
 
 def plot_single(ax, df, label):
+    # basic helper to plot one waveform on a given axis
     ax.plot(df["time"], df["value"], label=label)
     ax.set_xlabel("Time (s)")
     ax.set_ylabel("Value")
@@ -9,6 +10,9 @@ def plot_single(ax, df, label):
 
 
 def plot_transient_signals(d, d2, q1b, current):
+    # visualize input/output behavior together with supply current
+    # top: logic-level signals (D, D2, Q1B)
+    # bottom: current drawn from VDD
     fig, axes = plt.subplots(2, 1, figsize=(10, 7))
 
     plot_single(axes[0], d, "D")
@@ -26,6 +30,8 @@ def plot_transient_signals(d, d2, q1b, current):
 
 
 def plot_seu_cases(seu_dict):
+    # compare node response under different SEU injection scenarios
+    # each curve corresponds to a different disturbance condition
     fig, ax = plt.subplots(figsize=(10, 5))
 
     for name, df in seu_dict.items():
@@ -42,6 +48,8 @@ def plot_seu_cases(seu_dict):
 
 
 def plot_snm_curve(snm_df):
+    # plot the SNM-related curve (used here as a qualitative stability indicator)
+    # note: this is not a full butterfly curve, just the available data representation
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.plot(snm_df["time"], snm_df["value"])
     ax.set_title("SNM-Derived Curve")
