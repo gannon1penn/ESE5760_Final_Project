@@ -1,35 +1,45 @@
 simulator( 'spectre )
-design(	 "/lcars/home/g/gannon1/simulation/12T_DICE_Bitcell_SEU/spectre/schematic/netlist/netlist")
+design( "/lcars/home/g/gannon1/simulation/12T_DICE_Bitcell_SEU/spectre/schematic/netlist/netlist" )
 resultsDir( "/lcars/home/g/gannon1/simulation/12T_DICE_Bitcell_SEU/spectre/schematic" )
-modelFile( 
-    '("/lcars/software/linux/x86_64/ic-design/design_kits/gpdk045_v_6_0/gpdk045/../models/spectre/gpdk045.scs" "mc")
+modelFile(
+    '("/lcars/software/linux/x86_64/ic-design/design_kits/gpdk045_v_6_0/gpdk045/../models/spectre/gpdk045.scs" "tt")
 )
-analysis('tran ?stop "5n"  ?step "1p"  )
-desVar(	  "wn_access" 120n	)
-desVar(	  "wn_store" 120n	)
-desVar(	  "wp_store" 120n	)
-desVar(	  "Qinj0" -7.35f	)
-desVar(	  "Qinj1" 0	)
-desVar(	  "Qinj2" -7.35f	)
-desVar(	  "Qinj3" 0	)
-desVar(	  "Ipeak0" "Qinj0 / (150e-12 - 10e-12)"	)
-desVar(	  "Ipeak1" "Qinj1 / (150e-12 - 10e-12)"	)
-desVar(	  "Ipeak2" "Qinj2 / (150e-12 - 10e-12)"	)
-desVar(	  "Ipeak3" "Qinj3 / (150e-12 - 10e-12)"	)
+analysis( 'tran ?stop "5n" ?step "1p" )
+desVar( "wn_access" 120n )
+desVar( "wn_store"  120n )
+desVar( "wp_store"  120n )
+desVar( "Qinj0" -7.35f )
+desVar( "Qinj1" 0 )
+desVar( "Qinj2" -7.35f )
+desVar( "Qinj3" 0 )
+desVar( "Ipeak0" "Qinj0 / (150e-12 - 10e-12)" )
+desVar( "Ipeak1" "Qinj1 / (150e-12 - 10e-12)" )
+desVar( "Ipeak2" "Qinj2 / (150e-12 - 10e-12)" )
+desVar( "Ipeak3" "Qinj3 / (150e-12 - 10e-12)" )
 envOption(
-	'analysisOrder  list("dc" "tran") 
+    'analysisOrder list("dc" "tran")
 )
-save( 'i "/I17/MINUS" )
-converge( 'nodeset "/N0" "1.1" )
-converge( 'nodeset "/N2" "1.1" )
-converge( 'nodeset "/N1" "0" )
-converge( 'nodeset "/N3" "0" )
-temp( 27 ) 
+converge( 'nodeset "/N0" 1.1 )
+converge( 'nodeset "/N2" 1.1 )
+converge( 'nodeset "/N1" 0.0 )
+converge( 'nodeset "/N3" 0.0 )
+temp( 27 )
+wn_store_val = 120e-9
+wp_store_val = 120e-9
+wn_access_val = 120e-9
+temp_val = 27.0
+qinj_val = -7.35e-15
+
+outfile = outfile( "/lcars/home/g/gannon1/simulation/results/dice_seu_results.csv" "a" )
+
 run()
 selectResult( 'tran )
-; Extract final node voltage and flip detection
-let( ((n0_final (value (getData "/N0" ?result 'tran) 5e-9)))
-     (flipped (if (n0_final < 0.55) 1 0)) )
-  fprintf(outfile "%g,%g,%g,%g,%g,%g\n" 
-    wn_store wp_store wn_access temp_val Qinj0 flipped)
+
+let( ( (n0_final (value (getData "/N0" ?result 'tran) 5e-9)) )
+  let( ( (flipped (if (lessp n0_final 0.55) 1 0)) )
+    fprintf( outfile "%g,%g,%g,%g,%g,%d\n"
+  	wn_store_val wp_store_val wn_access_val temp_val qinj_val flipped )
+  )
 )
+
+close( outfile )
