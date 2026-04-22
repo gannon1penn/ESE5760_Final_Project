@@ -1,0 +1,107 @@
+; run_all_resume.ocn
+; Resumes ff corner from wn=160nm, wp=240nm, temp=0
+; Then completes ss, fs, sf corners in full
+
+; ---- Define sweep space ----
+wn_access_val  = 120e-9
+temp_list      = list( -40.0 0.0 27.0 85.0 125.0 )
+polarity_list  = list( 1 0 )
+
+; ---- Resume ff from wn=160nm, wp=240nm, temp=0 ----
+; Complete remaining wp values for wn=160nm starting from wp=240nm temp=0
+single_script = "/lcars/home/g/gannon1/cadenceGPDK/MemoryDesignFinalProject/dice_seu_single_ff.ocn"
+
+; wn=160nm, wp=240nm, remaining temps
+foreach( tmp list( 0.0 27.0 85.0 125.0 )
+    foreach( pol polarity_list
+        g_wn_store  = 160e-9
+        g_wp_store  = 240e-9
+        g_wn_access = wn_access_val
+        g_temp      = tmp
+        g_polarity  = pol
+        load( single_script )
+    )
+)
+
+; wn=160nm, remaining wp values
+foreach( wp list( 280e-9 320e-9 )
+    foreach( tmp temp_list
+        foreach( pol polarity_list
+            g_wn_store  = 160e-9
+            g_wp_store  = wp
+            g_wn_access = wn_access_val
+            g_temp      = tmp
+            g_polarity  = pol
+            load( single_script )
+        )
+    )
+)
+
+; remaining wn values for ff
+foreach( wn list( 200e-9 240e-9 280e-9 320e-9 )
+    foreach( wp list( 120e-9 160e-9 200e-9 240e-9 280e-9 320e-9 )
+        foreach( tmp temp_list
+            foreach( pol polarity_list
+                g_wn_store  = wn
+                g_wp_store  = wp
+                g_wn_access = wn_access_val
+                g_temp      = tmp
+                g_polarity  = pol
+                load( single_script )
+            )
+        )
+    )
+)
+
+; ---- Full ss corner ----
+single_script = "/lcars/home/g/gannon1/cadenceGPDK/MemoryDesignFinalProject/dice_seu_single_ss.ocn"
+foreach( wn list( 120e-9 160e-9 200e-9 240e-9 280e-9 320e-9 )
+    foreach( wp list( 120e-9 160e-9 200e-9 240e-9 280e-9 320e-9 )
+        foreach( tmp temp_list
+            foreach( pol polarity_list
+                g_wn_store  = wn
+                g_wp_store  = wp
+                g_wn_access = wn_access_val
+                g_temp      = tmp
+                g_polarity  = pol
+                load( single_script )
+            )
+        )
+    )
+)
+
+; ---- Full fs corner ----
+single_script = "/lcars/home/g/gannon1/cadenceGPDK/MemoryDesignFinalProject/dice_seu_single_fs.ocn"
+foreach( wn list( 120e-9 160e-9 200e-9 240e-9 280e-9 320e-9 )
+    foreach( wp list( 120e-9 160e-9 200e-9 240e-9 280e-9 320e-9 )
+        foreach( tmp temp_list
+            foreach( pol polarity_list
+                g_wn_store  = wn
+                g_wp_store  = wp
+                g_wn_access = wn_access_val
+                g_temp      = tmp
+                g_polarity  = pol
+                load( single_script )
+            )
+        )
+    )
+)
+
+; ---- Full sf corner ----
+single_script = "/lcars/home/g/gannon1/cadenceGPDK/MemoryDesignFinalProject/dice_seu_single_sf.ocn"
+foreach( wn list( 120e-9 160e-9 200e-9 240e-9 280e-9 320e-9 )
+    foreach( wp list( 120e-9 160e-9 200e-9 240e-9 280e-9 320e-9 )
+        foreach( tmp temp_list
+            foreach( pol polarity_list
+                g_wn_store  = wn
+                g_wp_store  = wp
+                g_wn_access = wn_access_val
+                g_temp      = tmp
+                g_polarity  = pol
+                load( single_script )
+            )
+        )
+    )
+)
+
+printf("Resume sweep complete.\n")

@@ -3,7 +3,7 @@
 
 ; ---- Write header ----
 csvport = outfile( "/lcars/home/g/gannon1/cadenceGPDK/MemoryDesignFinalProject/dice_power_results.csv" "a" )
-fprintf( csvport "wn_store,wp_store,wn_access,temp,leakage_power_W\n" )
+fprintf( csvport "wn_store,wp_store,wn_access,temp,Vn_N1,N0\n" )
 close( csvport )
 
 ; ---- Sweep space ----
